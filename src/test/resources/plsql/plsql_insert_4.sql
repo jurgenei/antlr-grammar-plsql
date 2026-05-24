@@ -1,0 +1,2 @@
+INSERT INTO T_DQ_BUSS_DETAIL VALUES l_dq_b_det(i);
+

@@ -1,2 +1,10 @@
+pluginManagement {
+    includeBuild("../gradle-antlr-plugin")
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
 rootProject.name = 'antlr-grammars-plsql'
 
