@@ -1,10 +1,10 @@
 /**
- * Oracle(c) PL/SQL 11g Parser
+ * Oracle(c) PL/SQL 21c Parser
  *
  * Copyright (c) 2009-2011 Alexandre Porcelli <alexandre.porcelli@gmail.com>
  * Copyright (c) 2015-2019 Ivan Kochurkin (KvanTTT, kvanttt@gmail.com, Positive Technologies).
  * Copyright (c) 2017 Mark Adams <madams51703@gmail.com>
- * Copyright (c) 2018-2024 Jurgen Hildebrand <ei@xs4all.nl>
+ * Copyright (c) 2018-2026 Jurgen Hildebrand <ei@xs4all.nl>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
