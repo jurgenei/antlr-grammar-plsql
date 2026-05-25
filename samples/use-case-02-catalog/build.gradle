@@ -11,13 +11,15 @@ repositories {
 dependencies {
     antlr 'org.antlr:antlr4:4.13.2'
     implementation 'org.antlr:antlr4-runtime:4.13.2'
+    implementation rootProject
 }
 
 tasks.named('xmlast', name.jurgenei.gradle.antlr.XmlAstGradleTask) {
-    sourceDirectory.set(layout.projectDirectory.dir('src/test/resources/benchmark'))
+    dependsOn rootProject.tasks.named('compileAntlrSources')
+    sourceDirectory.set(rootProject.layout.projectDirectory.dir('src/test/resources/plsql'))
     destinationDirectory.set(layout.buildDirectory.dir('xmlast-samples'))
 
-    catalogFile.set(layout.projectDirectory.file('samples/use-case-02-catalog/catalog.xml'))
+    catalogFile.set(layout.projectDirectory.file('catalog.xml'))
     catalogGrammar.set('plsql')
 
     // Optional override. If omitted, parser/lexer values from catalog are used.
@@ -26,6 +28,9 @@ tasks.named('xmlast', name.jurgenei.gradle.antlr.XmlAstGradleTask) {
 
     includes.set(['**/*.sql'])
     targetExtension.set('.xml')
-    runtimeClasspath.from(configurations.runtimeClasspath, files("$buildDir/classes/java/antlr"))
+    runtimeClasspath.from(
+        configurations.runtimeClasspath,
+        rootProject.layout.buildDirectory.dir('classes/java/antlr')
+    )
 }
 

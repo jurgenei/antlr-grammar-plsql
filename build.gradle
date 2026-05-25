@@ -85,14 +85,16 @@ sourceSets {
 tasks.register('verifyGrammarSources') {
     group = 'verification'
     description = 'Checks that PL/SQL grammar source files are present in the extracted module.'
+    def required = [
+            'src/main/antlr/name/jurgenei/parsers/PlSqlLexer.g4',
+            'src/main/antlr/name/jurgenei/parsers/PlSqlParser.g4'
+    ]
+    def requiredFiles = required.collect { file(it) }
+    inputs.files(requiredFiles)
     doLast {
-        def required = [
-                'src/main/antlr/name/jurgenei/parsers/PlSqlLexer.g4',
-                'src/main/antlr/name/jurgenei/parsers/PlSqlParser.g4'
-        ]
-        required.each { path ->
-            if (!file(path).isFile()) {
-                throw new GradleException("Missing required grammar file: ${path}")
+        requiredFiles.each { f ->
+            if (!f.isFile()) {
+                throw new GradleException("Missing required grammar file: ${f.path}")
             }
         }
     }
@@ -123,7 +125,7 @@ tasks.named('xmlast', name.jurgenei.gradle.antlr.XmlAstGradleTask) {
     destinationDirectory.set(layout.buildDirectory.dir('xmlast-samples'))
     parserClassName.set('name.jurgenei.parsers.PlSqlParser')
     lexerClassName.set('name.jurgenei.parsers.PlSqlLexer')
-    startRule.set('sqlScript')
+    startRule.set('script')
     includes.set(['**/*.sql'])
     targetExtension.set('.xml')
     runtimeClasspath.from(configurations.runtimeClasspath, configurations.antlr, files("$buildDir/classes/java/antlr"))

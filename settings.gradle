@@ -8,3 +8,7 @@ pluginManagement {
 
 rootProject.name = 'antlr-grammars-plsql'
 
+include(['use-case-01-direct', 'use-case-02-catalog', 'use-case-03-check-hook'])
+project(':use-case-01-direct').projectDir = file('samples/use-case-01-direct')
+project(':use-case-02-catalog').projectDir = file('samples/use-case-02-catalog')
+project(':use-case-03-check-hook').projectDir = file('samples/use-case-03-check-hook')

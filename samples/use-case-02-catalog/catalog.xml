@@ -3,6 +3,6 @@
       name="plsql"
       parser="name.jurgenei.parsers.PlSqlParser"
       lexer="name.jurgenei.parsers.PlSqlLexer"
-      start-rule="sqlScript"/>
+      start-rule="script"/>
 </catalog>
 

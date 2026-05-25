@@ -13,6 +13,6 @@ These files are designed as copy/paste templates for a grammar module where:
 
 - parser class: `name.jurgenei.parsers.PlSqlParser`
 - lexer class: `name.jurgenei.parsers.PlSqlLexer`
-- parser entry rule: `sqlScript`
+- parser entry rule: `script`
 - sample directory: `src/test/resources/benchmark`
 

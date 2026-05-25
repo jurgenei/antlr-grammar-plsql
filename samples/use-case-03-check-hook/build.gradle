@@ -4,9 +4,52 @@ plugins {
     id 'xmlast'
 }
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    antlr 'org.antlr:antlr4:4.13.2'
+    implementation 'org.antlr:antlr4-runtime:4.13.2'
+    implementation rootProject
+}
+
 // Keep grammar source checks in check lifecycle.
 tasks.named('check') {
     dependsOn tasks.named('verifyGrammarSources')
     dependsOn tasks.named('xmlast')
 }
 
+tasks.register('verifyGrammarSources') {
+    group = 'verification'
+    description = 'Checks that PL/SQL grammar source files are present in the root project.'
+    def requiredFiles = [
+            rootProject.file('src/main/antlr/name/jurgenei/parsers/PlSqlLexer.g4'),
+            rootProject.file('src/main/antlr/name/jurgenei/parsers/PlSqlParser.g4')
+    ]
+    inputs.files(requiredFiles)
+    doLast {
+        requiredFiles.each { file ->
+            if (!file.isFile()) {
+                throw new GradleException("Missing required grammar file in root project: ${file.path}")
+            }
+        }
+    }
+}
+
+tasks.named('xmlast', name.jurgenei.gradle.antlr.XmlAstGradleTask) {
+    dependsOn rootProject.tasks.named('compileAntlrSources')
+    sourceDirectory.set(rootProject.layout.projectDirectory.dir('src/test/resources/plsql'))
+    destinationDirectory.set(layout.buildDirectory.dir('xmlast-samples'))
+
+    parserClassName.set('name.jurgenei.parsers.PlSqlParser')
+    lexerClassName.set('name.jurgenei.parsers.PlSqlLexer')
+    startRule.set('script')
+
+    includes.set(['**/*.sql'])
+    targetExtension.set('.xml')
+    runtimeClasspath.from(
+        configurations.runtimeClasspath,
+        rootProject.layout.buildDirectory.dir('classes/java/antlr')
+    )
+}
