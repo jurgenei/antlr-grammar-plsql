@@ -2,7 +2,7 @@
 
 PL/SQL grammar module extracted from `gradle-antlr-xml-plugin`.
 
-This repository hosts PL/SQL ANTLR grammars and validates them against SQL sample corpora through dynamic parser loading tests.
+This repository hosts PL/SQL ANTLR grammars and validates them against SQL sample corpora through dynamic parser loading tests and XML AST conversion tasks.
 
 ## What this repo contains
 
@@ -12,6 +12,8 @@ This repository hosts PL/SQL ANTLR grammars and validates them against SQL sampl
 - SQL test samples:
   - `src/test/resources/plsql`
   - `src/test/resources/benchmark`
+  - `src/test/resources/antlr-issue`
+  - `src/test/resources/antlr-issue-unresolved` (known failing samples, tracked but excluded from CI checks)
 - dynamic-loading parser test: `src/test/java/name/jurgenei/parsers/PlSqlLexerParserTest.java`
 
 ## Build model
@@ -42,17 +44,19 @@ Tests load parser/lexer classes dynamically (reflection), avoiding direct compil
 - `compileAntlrSources` - compiles generated parser/lexer classes
 - `verifyGrammarSources` - checks required grammar files are present
 - `test` - runs dynamic-loading parser tests over sample SQL files
-- `xmlast` - optional conversion of benchmark SQL files to XML AST
+- `xmlast` - lifecycle alias that runs all XML AST sample-set tasks
+- `xml-ast-antlr-issue` - converts `src/test/resources/antlr-issue` SQL samples
+- `xml-ast-benchmark` - converts `src/test/resources/benchmark` SQL samples
+- `xml-ast-plsql` - converts `src/test/resources/plsql` SQL samples
 
 ## XML AST task
 
-`xmlast` is configured for benchmark parsing with:
+The XML AST tasks are configured with:
 
 - `parserClassName = name.jurgenei.parsers.PlSqlParser`
 - `lexerClassName = name.jurgenei.parsers.PlSqlLexer`
-- `startRule = sqlScript`
-- source directory: `src/test/resources/benchmark`
-- output directory: `build/xmlast-samples`
+- `startRule = script`
+- output directories under: `build/xmlast-samples`
 
 Run manually:
 
@@ -62,8 +66,12 @@ Run manually:
 
 ## Notes
 
-- `check` currently emphasizes source verification + test execution.
-- `xmlast` can be run explicitly for additional AST regression checks.
+- `check` runs source verification, unit tests, and the `xmlast` alias task.
+- `xmlast` is a lifecycle/wrapper task that depends on:
+  - `xml-ast-antlr-issue`
+  - `xml-ast-benchmark`
+  - `xml-ast-plsql`
+- `src/test/resources/antlr-issue-unresolved` contains known failing antlr issue samples and is intentionally not part of the default XML AST task inputs yet.
 
 ## Project status
 

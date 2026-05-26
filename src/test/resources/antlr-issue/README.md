@@ -2,6 +2,8 @@
 
 This directory contains extracted SQL test cases from open PLSQL issues in the [ANTLR grammars-v4 repository](https://github.com/antlr/grammars-v4).
 
+Known failing issue samples are kept separately in `../antlr-issue-unresolved` so this directory only contains cases that currently pass validation in CI.
+
 ## Overview
 
 - **Total Issues Scanned**: 45 open PLSQL issues
@@ -27,8 +29,8 @@ Each file includes:
 |---------|-------|--------|
 | 4840 | [plsql] USING INDEX without index name | ✓ |
 | 4839 | [plsql] Words treated as keywords: internal, fields, orc | ✓ |
-| 4838 | [plsql] MATERIALIZED VIEW: mismatched input 'SYSDATE' | ✓ |
-| 4837 | [plsql] Scientific notation in SEQUENCE | ✓ |
+| 4838 | [plsql] MATERIALIZED VIEW: mismatched input 'SYSDATE' | moved to `../antlr-issue-unresolved` |
+| 4837 | [plsql] Scientific notation in SEQUENCE | moved to `../antlr-issue-unresolved` |
 | 4830 | [PlSql] Missing returning_clause in merge_statement | ✓ |
 | 4785 | [PL/SQL] Parser grammar generates conflicting names for PHP methods | ✓ |
 | 4758 | [PL/SQL] Exponential parse time on sum(column) + ... | ✓ |
@@ -36,15 +38,15 @@ Each file includes:
 | 4348 | [PL/SQL] subquery_operation_part in atom | ✓ |
 | 4032 | PL/SQL parser cannot recognise record field with keyword | ✓ |
 | 3822 | [PL/SQL] SQL improper use of TIMEZONE token | ✓ |
-| 3817 | [PlSql] "REM", "REMARK", "PRO", "PROMPT" can not be a identifier | ✓ |
+| 3817 | [PlSql] "REM", "REMARK", "PRO", "PROMPT" can not be a identifier | moved to `../antlr-issue-unresolved` |
 | 3658 | [PL/SQL] unable to parse a sqlplus script | ✓ |
 | 3626 | [PL/SQL] PlSqlParser $$ or Predefined Inquiry Directives is not supported | ✓ |
-| 3043 | [PL/SQL] Parse error when using TO_DATE with default parameters | ✓ |
+| 3043 | [PL/SQL] Parse error when using TO_DATE with default parameters | moved to `../antlr-issue-unresolved` |
 | 2791 | [PL/SQL] CLOB parsing issue | ✓ |
 | 2493 | [PL/SQL] Comment syntax issue | ✓ |
 | 2452 | [PL/SQL] Type definition parsing | ✓ |
-| 2345 | [PL/SQL] View creation with complex expressions | ✓ |
-| 2142 | [PL/SQL] Complex query parsing | ✓ |
+| 2345 | [PL/SQL] View creation with complex expressions | moved to `../antlr-issue-unresolved` |
+| 2142 | [PL/SQL] Complex query parsing | moved to `../antlr-issue-unresolved` |
 | 1812 | [PL/SQL] Package body declaration | ✓ |
 | 1635 | [PL/SQL] Cursor declaration syntax | ✓ |
 | 1606 | [PL/SQL] Procedure parameter definition | ✓ |
@@ -72,4 +74,5 @@ The extraction was performed by `extract_issues.py` which:
 - 20 issues did not contain extractable SQL code in their descriptions
 - All generated files preserve the original issue reference for traceability
 - The script uses SSL context to handle certificate verification
+- Current unresolved/failing cases are tracked under `../antlr-issue-unresolved` (for example issues 2142, 2345, 3043, 3817, 4837, 4838).
 
