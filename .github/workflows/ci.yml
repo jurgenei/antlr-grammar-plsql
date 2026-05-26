@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: Ensure gradle-antlr-plugin is available
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT_PARENT="$(dirname "$GITHUB_WORKSPACE")"
+          OWNER="${GITHUB_REPOSITORY_OWNER}"
+
+          if [ -d "$ROOT_PARENT/gradle-antlr-plugin/.git" ]; then
+            echo "gradle-antlr-plugin already present"
+            exit 0
+          fi
+
+          if git clone --depth 1 "https://github.com/$OWNER/gradle-antlr-plugin.git" "$ROOT_PARENT/gradle-antlr-plugin"; then
+            echo "Cloned $OWNER/gradle-antlr-plugin"
+            exit 0
+          fi
+
+          if git clone --depth 1 "https://github.com/jurgenei/gradle-antlr-plugin.git" "$ROOT_PARENT/gradle-antlr-plugin"; then
+            echo "Cloned jurgenei/gradle-antlr-plugin"
+            exit 0
+          fi
+
+          echo "Could not clone required gradle-antlr-plugin"
+          exit 1
+
+      - name: Run tests
+        run: |
+          chmod +x ./gradlew
+          ./gradlew --no-daemon --stacktrace :test
+
