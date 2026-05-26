@@ -2,11 +2,14 @@ name: Test on Push
 
 on:
   push:
+  pull_request:
   workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,13 +28,39 @@ jobs:
           ROOT_PARENT="$(dirname "$GITHUB_WORKSPACE")"
           OWNER="${GITHUB_REPOSITORY_OWNER}"
 
-          if [ ! -d "$ROOT_PARENT/gradle-antlr-plugin/.git" ]; then
-            git clone --depth 1 "https://github.com/$OWNER/gradle-antlr-plugin.git" "$ROOT_PARENT/gradle-antlr-plugin"
-          fi
+          clone_if_missing() {
+            local target_dir="$1"
+            local required="$2"
+            shift 2
 
-          if [ ! -d "$ROOT_PARENT/gradle-antlr-parse-plugin/.git" ]; then
-            git clone --depth 1 "https://github.com/$OWNER/gradle-antlr-parse-plugin.git" "$ROOT_PARENT/gradle-antlr-parse-plugin"
-          fi
+            if [ -d "$target_dir/.git" ]; then
+              echo "Using existing repo: $target_dir"
+              return 0
+            fi
+
+            for repo in "$@"; do
+              if git clone --depth 1 "$repo" "$target_dir"; then
+                echo "Cloned $repo -> $target_dir"
+                return 0
+              fi
+              echo "Clone attempt failed: $repo"
+            done
+
+            if [ "$required" = "true" ]; then
+              echo "Required repository is unavailable: $target_dir"
+              exit 1
+            fi
+
+            echo "Optional repository unavailable: $target_dir"
+          }
+
+          clone_if_missing "$ROOT_PARENT/gradle-antlr-plugin" true \
+            "https://github.com/$OWNER/gradle-antlr-plugin.git" \
+            "https://github.com/jurgenei/gradle-antlr-plugin.git"
+
+          clone_if_missing "$ROOT_PARENT/gradle-antlr-parse-plugin" false \
+            "https://github.com/$OWNER/gradle-antlr-parse-plugin.git" \
+            "https://github.com/jurgenei/gradle-antlr-parse-plugin.git"
 
       - name: Build gradle-antlr-parse-plugin when present
         shell: bash
@@ -39,11 +68,15 @@ jobs:
           set -euo pipefail
           ROOT_PARENT="$(dirname "$GITHUB_WORKSPACE")"
 
-          if [ -d "$ROOT_PARENT/gradle-antlr-parse-plugin" ]; then
+          if [ -f "$ROOT_PARENT/gradle-antlr-parse-plugin/gradlew" ]; then
             chmod +x "$ROOT_PARENT/gradle-antlr-parse-plugin/gradlew"
             "$ROOT_PARENT/gradle-antlr-parse-plugin/gradlew" -p "$ROOT_PARENT/gradle-antlr-parse-plugin" --no-daemon clean build
+          else
+            echo "Skipping parse plugin build (repository not available)."
           fi
 
       - name: Run tests
-        run: ./gradlew --no-daemon :test
+        run: |
+          chmod +x ./gradlew
+          ./gradlew --no-daemon --stacktrace :test
 
