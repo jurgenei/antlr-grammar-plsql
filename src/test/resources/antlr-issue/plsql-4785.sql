@@ -1,2 +1,0 @@
--- Issue #4785: [PL/SQL] Parser grammar generates conflicting names for PHP methods
--- URL: https://github.com/antlr/grammars-v4/issues/4785

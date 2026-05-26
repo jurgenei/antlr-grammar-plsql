@@ -1,2 +1,0 @@
--- Issue #4032: PL/SQL parser cannot recognise record field with keyword
--- URL: https://github.com/antlr/grammars-v4/issues/4032

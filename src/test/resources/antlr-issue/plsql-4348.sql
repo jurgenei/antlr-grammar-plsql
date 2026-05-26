@@ -1,2 +1,0 @@
--- Issue #4348: PL/SQL: subquery_operation_part in atom
--- URL: https://github.com/antlr/grammars-v4/issues/4348
