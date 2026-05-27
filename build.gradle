@@ -1,3 +1,5 @@
+import name.jurgenei.gradle.antlr.XmlAstGradleTask
+
 plugins {
     id 'java'
     id 'antlr'
@@ -7,7 +9,7 @@ plugins {
 }
 
 group = 'name.jurgenei.grammars'
-version = '0.1.0-SNAPSHOT'
+version = '0.1.0'
 
 java {
     toolchain {
@@ -195,7 +197,7 @@ def configureXmlAstTask = { name.jurgenei.gradle.antlr.XmlAstGradleTask t, Strin
         t.logger.lifecycle("Completed XML AST conversion for ${outputDirName}")
     }
 }
-
+// name.jurgenei.gradle.antlr.XmlAstGradleTask
 tasks.named('xmlast', name.jurgenei.gradle.antlr.XmlAstGradleTask) {
     // Keep plugin default task name as a compatibility alias, but delegate work
     // to the explicit sample-set tasks below.
@@ -205,27 +207,35 @@ tasks.named('xmlast', name.jurgenei.gradle.antlr.XmlAstGradleTask) {
     onlyIf { false }
 }
 
-tasks.register('xml-ast-antlr-issue', name.jurgenei.gradle.antlr.XmlAstGradleTask) {
+tasks.register('xml-ast-antlr-issue', XmlAstGradleTask) {
     configureXmlAstTask(delegate, 'src/test/resources/antlr-issue', 'antlr-issue',
             'Parses antlr-issue SQL samples to XML AST for grammar validation.')
 }
 
-tasks.register('xml-ast-benchmark', name.jurgenei.gradle.antlr.XmlAstGradleTask) {
+tasks.register('xml-ast-benchmark', XmlAstGradleTask) {
     configureXmlAstTask(delegate, 'src/test/resources/benchmark', 'benchmark',
-            'Parses benchmark SQL samples to XML AST for grammar validation.')
+            'Parses benchmark SQL samples sequentially.')
 }
 
-tasks.register('xml-ast-plsql', name.jurgenei.gradle.antlr.XmlAstGradleTask) {
+tasks.register('xml-ast-benchmark-par', XmlAstGradleTask) { XmlAstGradleTask it ->
+    configureXmlAstTask(delegate, 'src/test/resources/benchmark', 'benchmark',
+            'Parses benchmark SQL samples parallel.')
+    it.executionModel.set('VIRTUAL_THREADS')
+    it.parallelism.set(3)  // Up to 100 concurrent tasks
+    // it.enableDFAMonitoring.set(true)
+}
+
+tasks.register('xml-ast-plsql', XmlAstGradleTask) {
     configureXmlAstTask(delegate, 'src/test/resources/plsql', 'plsql',
             'Parses plsql SQL samples to XML AST for grammar validation.')
 }
 
-tasks.register('xml-ast-examples', name.jurgenei.gradle.antlr.XmlAstGradleTask) {
+tasks.register('xml-ast-examples', XmlAstGradleTask) {
     configureXmlAstTask(delegate, 'src/test/resources/examples', 'plsql',
             'Parses plsql SQL samples to XML AST for grammar validation.')
 }
 
-tasks.register('xml-ast-more-examples', name.jurgenei.gradle.antlr.XmlAstGradleTask) {
+tasks.register('xml-ast-more-examples', XmlAstGradleTask) {
     configureXmlAstTask(delegate, 'src/test/resources/more-examples', 'plsql',
             'Parses plsql SQL samples to XML AST for grammar validation.')
 }
