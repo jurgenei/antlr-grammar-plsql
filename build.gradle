@@ -177,7 +177,23 @@ def configureXmlAstTask = { name.jurgenei.gradle.antlr.XmlAstGradleTask t, Strin
     t.startRule.set('script')
     t.includes.set(['**/*.sql'])
     t.targetExtension.set('.xml')
+    t.continueOnError.set(true)
+    t.suppressStackTrace.set(true)
     t.runtimeClasspath.from(configurations.runtimeClasspath, configurations.antlr, files("$buildDir/classes/java/antlr"))
+
+    // Configure error logging to always appear during Gradle runs (lifecycle level)
+    // and suppress verbose stack traces for cleaner build output
+    t.doFirst {
+        // Capture standard error at WARN level so critical messages always appear
+        logging.captureStandardError(LogLevel.WARN)
+        // Log conversion start at lifecycle level (always visible in normal builds)
+        t.logger.lifecycle("Starting XML AST conversion for ${sourcePath} -> ${outputDirName}")
+    }
+
+    t.doLast {
+        // Log conversion completion at lifecycle level (always visible)
+        t.logger.lifecycle("Completed XML AST conversion for ${outputDirName}")
+    }
 }
 
 tasks.named('xmlast', name.jurgenei.gradle.antlr.XmlAstGradleTask) {
