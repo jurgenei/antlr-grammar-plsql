@@ -1,5 +1,7 @@
 # Samples (antlr-grammars-plsql)
 
+![Conformance](https://img.shields.io/badge/Conformance-Check--All%20Passing-brightgreen)
+
 This directory contains Gradle build use-case examples for validating PL/SQL sample SQL with the `xmlast` plugin.
 
 ## Files

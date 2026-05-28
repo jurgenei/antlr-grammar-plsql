@@ -1,5 +1,7 @@
 # ANTLR PLSQL GitHub Issue Test Cases
 
+![Conformance](https://img.shields.io/badge/Conformance-Check--All%20Passing-brightgreen)
+
 This directory contains extracted SQL test cases from open PLSQL issues in the [ANTLR grammars-v4 repository](https://github.com/antlr/grammars-v4).
 
 Known failing issue samples are kept separately in `../antlr-issue-unresolved` so this directory only contains cases that currently pass validation in CI.
